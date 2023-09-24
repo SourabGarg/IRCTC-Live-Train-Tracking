@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Table</title>
+    <link rel="stylesheet" href="/static/tabel_style.css">
+</head>
+<body>
+    <main class="table">
+        <section class="table_header">
+            <h1>Train Live Status Of {{ user_input }}</h1>
+        </section>
+        <section class="table_body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Station Name</th>
+                        <th>Station Day</th>
+                        <th>Station Arrival</th>
+                        <th>Station Departure</th>
+                        <th>Delay</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for station in stations_data %}
+                    <tr>
+                        <td>
+                            {% if station['station_departed_bool'] %}
+                                <img src="/static/leave.png" alt="Leave">
+                            {% elif station['station_arrival_bool'] and station['station_dept']== 'End' %}
+                                <img src="/static/leave.png" alt="Leave">
+                            {% elif not station['station_departed_bool'] and not station['station_arrival_bool'] and first_bool %}
+                                <img src="/static/upcoming.png" alt="Not Arrived">
+                                {% set first_bool = false %}
+                            {% else %}
+                                <img src="/static/dot.gif" alt="Upcoming">
+                            {% endif %}
+                            {{ station['station_name'] }} ({{ station['station_code'] }})
+                        </td>
+                        <td>Day {{ station['station_day'] }} {{ station['curr_date'] }}</td>
+                        <td>{{ station['station_arrival'] }}</td>
+                        <td>{{ station['station_dept'] }}</td>
+                        <td>
+                            <p class="{% if 'Late' in station['station_status'] %}late{% elif 'On' in station['station_status'] %}on_time{% elif 'Early' in station['station_status'] %}early{% endif %}">
+                                {{ station['station_status'] }}
+                            </p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                              
+            </table>
+        </section>
+
+    </main>
+</body>
+</html>
