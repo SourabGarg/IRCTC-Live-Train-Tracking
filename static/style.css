@@ -7,13 +7,13 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    /* background: #1daf; */
-    background-image: url('/static/bg.jpg');
+    background: #71c2ff;
+    /*background-image: url('/static/bg.jpg');
     background-repeat: no-repeat;
     background-size: cover; 
     background-position: center center; 
     background-attachment: fixed;
-    backdrop-filter: blur(0.5px); 
+    backdrop-filter: blur(0.5px); */
 }
 .box{
     height: 30px;
@@ -23,7 +23,7 @@ body{
     background: #fff;
     border-radius: 30px ;
     align-items: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
 
 /* .box:hover input {
