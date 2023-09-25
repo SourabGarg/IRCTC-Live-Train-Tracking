@@ -15,6 +15,9 @@ body{
     background-attachment: fixed;
     backdrop-filter: blur(0.5px); */
 }
+form{
+    background-color: #71c2ff;
+}
 .box{
     height: 30px;
     display: flex;
