@@ -1,8 +1,12 @@
 import requests
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request
+import os
 
 app = Flask(__name__)
+
+current_datetime = datetime.now()
+today_date = current_datetime.strftime('%d-%m-%Y')
 
 
 def increment_date(date_str, days):
@@ -24,13 +28,13 @@ def increment_date(date_str, days):
     return incremented_dates
 
 
-def get_data(user_input, Date_input):
+def get_data(user_input, date_input):
     global travel_date
-    # train_number = "12801"
-    train_number = user_input
-    api_key = "YOUR API KEY"
 
-    start_date = Date_input
+    train_number = user_input
+    api_key = os.environ["train_key"]
+
+    start_date = date_input
     date = start_date.replace("-", "")
     date_obj = datetime.strptime(start_date, '%Y-%m-%d')
     formatted_date = date_obj.strftime('%d %b %Y')
@@ -118,9 +122,30 @@ def process():
     user_input = request.form['user_input']
     Date_input = request.form['Date_input']
     stations_data = get_data(user_input, Date_input)
-    first_bool = True
-    return render_template("full_and_final.html", stations_data=stations_data, first_bool=first_bool,
-                           user_input=user_input, Date_input=Date_input)
+    image_links = []
+    crossed = 0
+
+    for n, station in enumerate(stations_data):
+        if station['station_departed_bool']:
+            image_links.append("/static/leave.png")
+            crossed = n
+        elif station['station_arrival_bool'] and station['station_dept'] == 'End':
+            image_links.append("/static/leave.png")
+        elif not station['station_departed_bool'] and not station['station_arrival_bool']:
+            image_links.append("/static/upcoming.png")
+        else:
+            image_links.append("/static/dot.gif")
+
+    if today_date < Date_input:
+        for n, station in enumerate(stations_data):
+            if n <= crossed:
+                image_links[n] = "/static/leave.png"
+            if n > crossed:
+                image_links[n+1] = "/static/dot.gif"
+                break
+
+    return render_template("table.html", stations_data=stations_data, image_links=image_links, user_input=user_input,
+                           Date_input=Date_input)
 
 
 if __name__ == '__main__':
