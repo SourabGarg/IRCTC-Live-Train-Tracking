@@ -26,16 +26,7 @@
                     {% for station in stations_data %}
                     <tr>
                         <td>
-                            {% if station['station_departed_bool'] %}
-                                <img src="/static/leave.png" alt="Leave">
-                            {% elif station['station_arrival_bool'] and station['station_dept']== 'End' %}
-                                <img src="/static/leave.png" alt="Leave">
-                            {% elif not station['station_departed_bool'] and not station['station_arrival_bool'] and first_bool %}
-                                <img src="/static/upcoming.png" alt="Not Arrived">
-                                {% set first_bool = false %}
-                            {% else %}
-                                <img src="/static/dot.gif" alt="Upcoming">
-                            {% endif %}
+                            <img src="{{ image_links[loop.index0] }}" alt="img">
                             {{ station['station_name'] }} ({{ station['station_code'] }})
                         </td>
                         <td>Day {{ station['station_day'] }} {{ station['curr_date'] }}</td>
