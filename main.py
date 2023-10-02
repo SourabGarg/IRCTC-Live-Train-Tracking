@@ -38,6 +38,8 @@ def get_data(user_input, date_input):
     date = start_date.replace("-", "")
     date_obj = datetime.strptime(start_date, '%Y-%m-%d')
     formatted_date = date_obj.strftime('%d %b %Y')
+        if formatted_date[0] == "0":
+        formatted_date = formatted_date[1:]
     formatted_date_2nd = date_obj.strftime('%d-%b-%Y')
 
     url = f"https://www.trainman.in/services/get-ntes-running-status/{train_number}?key=" \
