@@ -9,23 +9,23 @@ current_datetime = datetime.now()
 today_date = current_datetime.strftime('%d-%m-%Y')
 
 
-def increment_date(date_str, days):
-    month_name_mapping = {
-        1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'
-    }
+def format_date(date):
+    formatted_date = date.strftime("%d %b %Y") 
+    internal_date = date.strftime("%Y%m%d") 
+    return formatted_date, internal_date
 
-    input_date = datetime.strptime(date_str, '%d-%b-%Y')
 
-    incremented_dates = []
+def generate_dates():
+    today = datetime.today()
+    future_dates = []
+    past_dates = []
 
-    for day in range(days):
-        new_date = input_date + timedelta(days=day)
-        month_name = month_name_mapping[new_date.month]
-        new_date_str = new_date.strftime(f'%d-{month_name}')
-        incremented_dates.append(new_date_str)
+    for i in range(3, 0, -1):
+        past_date = today - timedelta(days=i)
+        past_dates.append(format_date(past_date))
 
-    return incremented_dates
+    todays_date = format_date(today)
+    return past_dates + [todays_date]
 
 
 def get_data(user_input, date_input):
@@ -33,17 +33,12 @@ def get_data(user_input, date_input):
 
     train_number = user_input
     api_key = os.environ["train_key"]
-
-    start_date = date_input
-    date = start_date.replace("-", "")
-    date_obj = datetime.strptime(start_date, '%Y-%m-%d')
-    formatted_date = date_obj.strftime('%d %b %Y')
-        if formatted_date[0] == "0":
-        formatted_date = formatted_date[1:]
-    formatted_date_2nd = date_obj.strftime('%d-%b-%Y')
-
+    date_obj = datetime.strptime(date_input, "%Y%m%d")
+    selected_date = date_obj.strftime("%d %b %Y")
+    if selected_date[0] == "0":
+        selected_date = selected_date[1:]
     url = f"https://www.trainman.in/services/get-ntes-running-status/{train_number}?key=" \
-          f"{api_key}&int=1&refresh=true&date={date}"
+          f"{api_key}&int=1&refresh=true&date={selected_date}"
 
     headers = {'User-Agent': 'Chrome/91.0.4472.114'}
     response = requests.get(url=url, headers=headers)
@@ -51,8 +46,9 @@ def get_data(user_input, date_input):
 
     current_rake_station = None
     rakes = Data['rakes']
+    
     for Rakes in rakes:
-        if Rakes['startDate'] == formatted_date:
+        if Rakes['startDate'] == selected_date:
             current_rake_station = Rakes['stations']
 
     station_with_halt = []
@@ -65,8 +61,6 @@ def get_data(user_input, date_input):
     station_with_halt[0]['arrive'] = 'Start'
     station_with_halt.append(current_rake_station[-1])
     station_with_halt[-1]['depart'] = 'End'
-
-    travel_days = station_with_halt[-1]['day']
 
     for n in range(len(station_with_halt)):
         station_name = station_with_halt[n].get('sname', None)
@@ -95,18 +89,9 @@ def get_data(user_input, date_input):
             DELAY_d = abs(int(DELAY_D[:3]))
             station_status = f"Early by: {DELAY_d} min"
 
-        new_dates_list = increment_date(formatted_date_2nd, travel_days)
-        new_dates_list.insert(0, "XX-XX")
-        print(new_dates_list)
-        curr_date = None
-        for Index in range(len(new_dates_list)):
-            if Index == station_day:
-                curr_date = new_dates_list[Index]
-                break
-
         station_info = {'station_name': station_name, 'station_code': station_code, 'station_day': station_day,
                         'station_arrival': station_arrival, 'station_dept': station_dept, 'station_delay':
-                        station_delay, 'DELAY_D': DELAY_D, 'station_status': station_status, 'curr_date': curr_date,
+                            station_delay, 'DELAY_D': DELAY_D, 'station_status': station_status,
                         'station_departed_bool': station_departed_bool, 'station_arrival_bool': station_arrival_bool}
 
         stations_data.append(station_info)
@@ -116,13 +101,17 @@ def get_data(user_input, date_input):
 
 @app.route('/')
 def index():
-    return render_template('home.html')
+    display_dates = generate_dates()
+    return render_template('home.html', available_dates=display_dates)
 
 
 @app.route('/process', methods=['POST'])
 def process():
     user_input = request.form['user_input']
-    Date_input = request.form['Date_input']
+    Date_input = request.form['date_input']
+    formatted_date = datetime.strptime(Date_input, "%Y%m%d")
+    start_date = formatted_date.strftime("%d %b %Y")
+
     stations_data = get_data(user_input, Date_input)
     image_links = []
     crossed = 0
@@ -143,11 +132,11 @@ def process():
             if n <= crossed:
                 image_links[n] = "/static/leave.png"
             if n > crossed:
-                image_links[n+1] = "/static/dot.gif"
+                image_links[n] = "/static/dot.gif"
                 break
 
     return render_template("table.html", stations_data=stations_data, image_links=image_links, user_input=user_input,
-                           Date_input=Date_input)
+                           start_date=start_date)
 
 
 if __name__ == '__main__':
