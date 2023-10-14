@@ -10,6 +10,7 @@
     <main class="table">
         <section class="table_header">
             <h1>Train Live Status Of {{ user_input }}</h1>
+            <h1 style="margin: 10px; font-weight: lighter;">Starting Date: {{ start_date }}</h1>
         </section>
         <section class="table_body">
             <table>
@@ -27,7 +28,7 @@
                     <tr>
                         <td>
                             <img src="{{ image_links[loop.index0] }}" alt="img">
-                            {{ station['station_name'] }} ({{ station['station_code'] }})
+                            {{ station['station_name'] }} {{ station['station_code'] }}
                         </td>
                         <td>Day {{ station['station_day'] }} {{ station['curr_date'] }}</td>
                         <td>{{ station['station_arrival'] }}</td>
