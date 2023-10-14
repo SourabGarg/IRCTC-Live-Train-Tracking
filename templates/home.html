@@ -8,15 +8,18 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 </head>
 <body>
-    <div class="main_block">
-<!--        <h1>Live Train Status </h1>-->
-        <form action="/process" method="post">
-            <div class="box">
-                <input type="text" name="user_input" placeholder="Enter Train Number..." autocomplete="off">
-                <input type="date" class="date_input" name="Date_input">
-                <button type="submit" class="submit_button"><img src="/static/submit.png" alt="Search-icon" class="image"></button>
-            </div>
-        </form>
-    </div>
+  <div class="main_block" style="background-color: #F1EFEF;">
+    <form action="/process" method="post">
+        <div class="box">
+            <input type="text" name="user_input" placeholder="Enter Train Number..." autocomplete="off" required>
+            <select id="date-dropdown" name="date_input">
+                {% for display_date, internal_date in available_dates %}
+                    <option name="date_input" value="{{ internal_date }}">{{ display_date }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="submit_button"><img src="/static/submit.png" alt="Search-icon" class="image"></button>
+        </div>
+    </form>
+</div>
 </body>
 </html>
