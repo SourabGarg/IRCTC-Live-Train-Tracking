@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Table</title>
+    <title>Train Raver</title>
     <link rel="stylesheet" href="/static/tabel_style.css">
+    <link rel="shortcut icon" href="/static/favicon.png" type="image/svg+xml" />
 </head>
 <body>
     <main class="table">
         <section class="table_header">
-            <h1>Train Live Status Of {{ user_input }}</h1>
+            <h1>Live Train Status of {{ train_name }} ({{ user_input }})</h1>
             <h1 style="margin: 10px; font-weight: lighter;">Starting Date: {{ start_date }}</h1>
         </section>
         <section class="table_body">
@@ -17,9 +18,8 @@
                 <thead>
                     <tr>
                         <th>Station Name</th>
-                        <th>Station Day</th>
-                        <th>Station Arrival</th>
-                        <th>Station Departure</th>
+                        <th>Station Arr</th>
+                        <th>Station Dept</th>
                         <th>Delay</th>
                     </tr>
                 </thead>
@@ -29,8 +29,8 @@
                         <td>
                             <img src="{{ image_links[loop.index0] }}" alt="img">
                             {{ station['station_name'] }} {{ station['station_code'] }}
+                            <span class="small-text"> Day {{ station['station_day'] }} {{ station['curr_date'] }}</span>
                         </td>
-                        <td>Day {{ station['station_day'] }} {{ station['curr_date'] }}</td>
                         <td>{{ station['station_arrival'] }}</td>
                         <td>{{ station['station_dept'] }}</td>
                         <td>
