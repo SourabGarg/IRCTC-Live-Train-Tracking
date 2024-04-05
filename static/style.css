@@ -34,7 +34,7 @@ form{
 } */
 
 .box input{
-    width: 300px;
+    width: 250px;
     outline: none;
     border: none;
     font-weight: 500;
@@ -77,4 +77,14 @@ h1{
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     text-shadow: 0 10px 25px rgba(0,0,0,1);
     margin-bottom: 15px;
+}
+@media only screen and (max-width: 550px) {
+  .box input {
+    width: 150px;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .box input {
+    width: 120px;
+  }
 }
