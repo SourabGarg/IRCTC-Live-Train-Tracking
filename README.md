@@ -1,7 +1,7 @@
 # IRCTC-Live-Train-Tracking
 Track IRCTC Train's Live Location
 
-Track Live Location of IRCTC train by providing train number and start date (NOTE: Error Hndling is not added yet)
+A responsive and error handling web application that Track Live Location of IRCTC train by providing train number and start date 
 
 OUTPUT:
 ![image](https://github.com/SourabGarg/IRCTC-Live-Train-Tracking/assets/112079423/3cf6f9bf-1f56-4a15-a98e-18a380132b3d)
